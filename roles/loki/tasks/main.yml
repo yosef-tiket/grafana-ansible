@@ -2,9 +2,8 @@
 # tasks file for loki
 - name: Install loki dependencies
   apt:
-    name: "{{ item }}"
+    name: "{{ loki_dependencies }}"
     state: present
-  with_items: "{{ loki_dependencies }}"
   when: ansible_os_family == "Debian"
 
 - name: Make loki directory
