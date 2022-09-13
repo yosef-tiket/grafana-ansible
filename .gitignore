@@ -1,0 +1,16 @@
+*.retry
+*.cfg
+
+#Ignore vscode
+*.code-workspace
+
+*.DS_Store
+
+# Ignore vault
+*.vpassproduction
+
+#ignore ansible.cfg
+ansible.cfg
+
+# Ignore log folder
+logs
