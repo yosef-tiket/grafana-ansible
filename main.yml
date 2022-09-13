@@ -1,0 +1,7 @@
+- name: Install grafana loki and promtail
+  hosts: localhost
+  become: yes
+  roles:
+    - grafana
+    - loki
+    - promtail
