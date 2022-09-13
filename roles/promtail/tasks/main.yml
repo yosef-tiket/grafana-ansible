@@ -1,2 +1,42 @@
 ---
 # tasks file for promtail
+
+- name: Install promtail dependencies
+  apt:
+    name: "{{ item }}"
+    state: present
+  with_items: "{{ promtail_dependencies }}"
+  when: ansible_os_family == "Debian"
+
+- name: Make promtail directory
+  file:
+    path: "{{ promtail_install_dir }}"
+    state: directory
+
+- name: Download promtail
+  get_url:
+    url: "https://github.com/grafana/loki/releases/download/{{ promtail_version }}/promtail-{{ promtail_variant }}.zip"
+    dest: "{{ promtail_install_dir }}/promtail-{{ promtail_variant }}.zip"
+
+- name: Unzip promtail
+  unarchive:
+    src: "{{ promtail_install_dir }}/promtail-{{ promtail_variant }}.zip"
+    dest: "{{ promtail_install_dir }}"
+    remote_src: yes
+
+- name: Copy promtail config
+  template:
+    src: config.j2
+    dest: "{{ promtail_install_dir }}/promtail-config.yaml"
+
+- name: Copy promtail systemd service
+  template:
+    src: service.j2
+    dest: /etc/systemd/system/promtail.service
+
+- name: Start promtail service
+  service:
+    name: promtail
+    state: started
+    enabled: yes
+  when: ansible_os_family == "Debian"

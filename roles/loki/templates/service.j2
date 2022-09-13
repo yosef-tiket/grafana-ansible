@@ -1,0 +1,12 @@
+[Unit] 
+Description=Loki service 
+After=network.target 
+ 
+[Service] 
+Type=simple 
+#User=loki 
+ExecStart={{ loki_install_dir }}/loki-{{ loki_variant }} -config.file {{ loki_install_dir }}/loki-config.yaml
+Restart=always 
+ 
+[Install] 
+WantedBy=multi-user.target

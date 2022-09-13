@@ -1,2 +1,41 @@
 ---
 # tasks file for loki
+- name: Install loki dependencies
+  apt:
+    name: "{{ item }}"
+    state: present
+  with_items: "{{ loki_dependencies }}"
+  when: ansible_os_family == "Debian"
+
+- name: Make loki directory
+  file:
+    path: "{{ loki_install_dir }}"
+    state: directory
+
+- name: Download loki
+  get_url:
+    url: "https://github.com/grafana/loki/releases/download/{{ loki_version }}/loki-{{ loki_variant }}.zip"
+    dest: "{{ loki_install_dir }}/loki-linux-amd64.zip"
+
+- name: Unzip loki
+  unarchive:
+    src: "{{ loki_install_dir }}/loki-{{ loki_variant }}.zip"
+    dest: "{{ loki_install_dir }}"
+    remote_src: yes
+
+- name: Copy loki config
+  template:
+    src: config.j2
+    dest: "{{ loki_install_dir }}/loki-config.yaml"
+
+- name: Copy loki systemd service
+  template:
+    src: service.j2
+    dest: /etc/systemd/system/loki.service
+
+- name: Start loki service
+  service:
+    name: loki
+    state: started
+    enabled: yes
+  when: ansible_os_family == "Debian"

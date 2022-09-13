@@ -1,2 +1,6 @@
 ---
 # defaults file for promtail
+promtail_version: v2.6.1
+promtail_install_dir: /opt/loki
+promtail_variant: linux-amd64
+promtail_memory_limit: 5G
